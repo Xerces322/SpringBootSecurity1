@@ -7,4 +7,8 @@ import ru.kata.spring.boot_security.demo.entities.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
     User findByUsername(String username);
+    boolean existsByUsername(String username);
+    boolean existsByUsernameAndIdIsNot(String username, int id);
+    boolean existsByEmail(String email);
+    boolean existsByEmailAndIdIsNot(String email, int id);
 }

@@ -1,13 +1,16 @@
 package ru.kata.spring.boot_security.demo.entities;
 
+import lombok.Data;
 import org.hibernate.annotations.Cascade;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@Data
 @Table(name = "Roles")
-public class Role {
+public class Role implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -20,30 +23,8 @@ public class Role {
     @Cascade(org.hibernate.annotations.CascadeType.PERSIST)
     private List<User> users;
 
-    public Role() {
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getRoleName() {
-        return roleName;
-    }
-
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
-    }
-
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
+    @Override
+    public String getAuthority() {
+        return this.roleName;
     }
 }

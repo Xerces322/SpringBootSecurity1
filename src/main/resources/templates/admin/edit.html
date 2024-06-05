@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit user for Admin</title>
+</head>
+<body>
+<h1>Admin -- edit</h1>
+<hr/>
+<form th:method="PATCH" th:action="@{/admin/update(id=${user.id})}" th:object="${user}">
+    <label for="username">Enter username: </label>
+    <input type="text" th:field="*{username}" id="username"/>
+    <div style="color: red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Name Error</div>
+    <br>
+    <label for="age">Enter age: </label>
+    <input type="text" th:field="*{age}" id="age"/>
+    <div style="color: red" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">Age Error</div>
+    <br>
+    <label for="email">Enter email: </label>
+    <input type="email" th:field="*{email}" id="email"/>
+    <div style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email Error</div>
+    <br>
+    <label for="password">Enter password: </label>
+    <input type="password" th:field="*{password}" id="password"/>
+    <br>
+    <label>
+        <select name="selectedRole">
+            <option th:each="role : ${roles}" th:value="${role.roleName}" th:text="${role.roleName}"></option>
+        </select>
+    </label>
+    <input type="submit" value="Edit!"/>
+</form>
+</body>
+</html>

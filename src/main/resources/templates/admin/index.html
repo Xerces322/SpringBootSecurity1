@@ -4,9 +4,13 @@
     <title>Spring Security Example</title>
 </head>
 <body>
-<h1>User</h1>
-<a th:text="${user.getUsername()}"></a>
+<h1>Admin -- all users</h1>
+<hr/>
+<div th:each="u : ${users}">
+    <a th:href="@{/admin/profile(username=${u.username})}" th:text="${u.getUsername()}"></a>
+</div>
 <br>
+<a href="/admin">BACK TO ADMIN ACTIONS</a>
 <hr/>
 <a href="/logout">LOGOUT</a>
 </body>
