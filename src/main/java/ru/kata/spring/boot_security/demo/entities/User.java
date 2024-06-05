@@ -8,10 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,17 +25,20 @@ public class User implements UserDetails {
     private int id;
 
     @Column(name = "username")
+    @NotEmpty(message = "Username should not be empty")
     private String username;
 
     @Column(name = "password")
+    @NotEmpty(message = "Password should not be empty")
     private String password;
 
     @Column(name = "age")
-    @Min(value = 10, message = "min 10")
+    @Min(value = 10, message = "Min 10")
     private int age;
 
     @Column(name = "email")
-    @Email(message = "email should be valid")
+    @NotEmpty(message = "Email should not be empty")
+    @Email(message = "Email should be valid")
     private String email;
 
     @ManyToMany(fetch = FetchType.EAGER)

@@ -26,6 +26,11 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
+    @Override
+    public User findById(int id) {
+        return userRepository.findById(id);
+    }
+
     @Autowired
     @Lazy
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {

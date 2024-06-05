@@ -66,6 +66,7 @@ public class AdminController {
         userValidator.setEdit(false);
         Role role = roleService.getRole(roleName);
         if (bindingResult.hasErrors()) {
+            model.addAttribute("roles", roleService.getRoles());
             return "admin/edit";
         }
         userService.update(user, role);
@@ -87,6 +88,7 @@ public class AdminController {
         userValidator.validate(user, bindingResult);
         Role role = roleService.getRole(roleName);
         if (bindingResult.hasErrors()) {
+            model.addAttribute("roles", roleService.getRoles());
             return "admin/new";
         }
         userService.save(user, role);
