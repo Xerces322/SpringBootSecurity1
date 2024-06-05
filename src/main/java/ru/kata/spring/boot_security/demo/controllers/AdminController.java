@@ -16,9 +16,9 @@ import javax.validation.Valid;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-    UserService userService;
-    RoleService roleService;
-    UserValidator userValidator;
+    private final UserService userService;
+    private final RoleService roleService;
+    private UserValidator userValidator;
 
     @Autowired
     public AdminController(UserService userService, RoleService roleService) {
