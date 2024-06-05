@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+</head>
+<body>
+<h1>User</h1>
+<hr/>
+Nickname: <a th:text="${user.getUsername()}"></a><br>
+Age: <a th:text="${user.getAge()}"></a><br>
+Email: <a th:text="${user.getEmail()}"></a><br>
+<hr/>
+<a href="/logout">LOGOUT</a>
+</body>
+</html>
