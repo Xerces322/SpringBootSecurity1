@@ -60,10 +60,8 @@ public class AdminController {
                          Model model,
                          @ModelAttribute("user") @Valid User user,
                          BindingResult bindingResult) {
-        userValidator.setEdit(true);
         user.setId(id);
-        userValidator.validate(user, bindingResult);
-        userValidator.setEdit(false);
+        userValidator.validate1(user, bindingResult, true);
         Role role = roleService.getRole(roleName);
         if (bindingResult.hasErrors()) {
             model.addAttribute("roles", roleService.getRoles());
@@ -85,7 +83,7 @@ public class AdminController {
                          Model model,
                          @ModelAttribute("user") @Valid User user,
                          BindingResult bindingResult) {
-        userValidator.validate(user, bindingResult);
+        userValidator.validate1(user, bindingResult, false);
         Role role = roleService.getRole(roleName);
         if (bindingResult.hasErrors()) {
             model.addAttribute("roles", roleService.getRoles());

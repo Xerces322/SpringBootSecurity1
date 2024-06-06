@@ -14,17 +14,16 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Entity
 
+@Entity
 @Table(name = "Users")
-@Data
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private int id;
 
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
     @NotEmpty(message = "Username should not be empty")
     private String username;
 
@@ -36,7 +35,7 @@ public class User implements UserDetails {
     @Min(value = 10, message = "Min 10")
     private int age;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     @NotEmpty(message = "Email should not be empty")
     @Email(message = "Email should be valid")
     private String email;
@@ -60,6 +59,56 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream().map(r -> new SimpleGrantedAuthority(r.getAuthority())).collect(Collectors.toList());
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.username;
     }
 
     @Override

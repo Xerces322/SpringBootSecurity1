@@ -12,9 +12,6 @@ import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 public class UserValidator implements Validator {
     private final UserRepository userRepository;
 
-    @Setter
-    private boolean edit = false;
-
     @Autowired
     public UserValidator(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -27,9 +24,14 @@ public class UserValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
+        validate1(target, errors, false);
+    }
+
+    public void validate1(Object target, Errors errors, boolean edit) {
+        //Такое решение исправляет проблему с многопоточностью?
         User user = (User) target;
         if (!edit) {
-            if (userRepository.existsByUsername(user.getUsername()) && !edit) {
+            if (userRepository.existsByUsername(user.getUsername())) {
                 errors.rejectValue("username", "", "Username is already in use");
             } else if (userRepository.existsByEmail(user.getEmail())) {
                 errors.rejectValue("email", "", "Email is already in use");
