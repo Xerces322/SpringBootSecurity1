@@ -1,6 +1,5 @@
 package ru.kata.spring.boot_security.demo.entities;
 
-import lombok.Data;
 import org.hibernate.annotations.Cascade;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,22 +22,26 @@ public class User implements UserDetails {
     @Column
     private int id;
 
-    @Column(name = "username", unique = true)
-    @NotEmpty(message = "Username should not be empty")
-    private String username;
+    @Column(name = "first_name")
+    @NotEmpty(message = "first name should not be empty")
+    private String firstName;
 
-    @Column(name = "password")
-    @NotEmpty(message = "Password should not be empty")
-    private String password;
+    @Column(name = "last_name")
+    @NotEmpty(message = "last name should not be empty")
+    private String lastName;
 
     @Column(name = "age")
-    @Min(value = 10, message = "Min 10")
+    @Min(value = 1, message = "age should be more than 0")
     private int age;
 
     @Column(name = "email", unique = true)
-    @NotEmpty(message = "Email should not be empty")
-    @Email(message = "Email should be valid")
+    @NotEmpty(message = "email should not be empty")
+    @Email(message = "email should be valid")
     private String email;
+
+    @Column(name = "password")
+    @NotEmpty(message = "password should not be empty")
+    private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
@@ -63,46 +66,6 @@ public class User implements UserDetails {
         return roles.stream().map(r -> new SimpleGrantedAuthority(r.getAuthority())).collect(Collectors.toList());
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public List<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
-    }
-
     @Override
     public String getPassword() {
         return this.password;
@@ -110,7 +73,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.username;
+        return this.email;
     }
 
     @Override
@@ -131,5 +94,57 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 }

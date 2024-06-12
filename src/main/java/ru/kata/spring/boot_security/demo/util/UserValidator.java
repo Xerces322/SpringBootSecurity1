@@ -28,18 +28,13 @@ public class UserValidator implements Validator {
     }
 
     public void validate1(Object target, Errors errors, boolean edit) {
-        //Такое решение исправляет проблему с многопоточностью?
         User user = (User) target;
         if (!edit) {
-            if (userRepository.existsByUsername(user.getUsername())) {
-                errors.rejectValue("username", "", "Username is already in use");
-            } else if (userRepository.existsByEmail(user.getEmail())) {
+            if (userRepository.existsByEmail(user.getUsername())) {
                 errors.rejectValue("email", "", "Email is already in use");
             }
         } else {
-            if (userRepository.existsByUsernameAndIdIsNot(user.getUsername(), user.getId())) {
-                errors.rejectValue("username", "", "Username is already in use");
-            } else if (userRepository.existsByEmailAndIdIsNot(user.getEmail(), user.getId())) {
+            if (userRepository.existsByEmailAndIdIsNot(user.getEmail(), user.getId())) {
                 errors.rejectValue("email", "", "Email is already in use");
             }
         }

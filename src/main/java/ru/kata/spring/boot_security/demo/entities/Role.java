@@ -1,6 +1,5 @@
 package ru.kata.spring.boot_security.demo.entities;
 
-import lombok.Data;
 import org.hibernate.annotations.Cascade;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -27,6 +26,10 @@ public class Role implements GrantedAuthority {
     @Override
     public String getAuthority() {
         return this.roleName;
+    }
+
+    public String getSimpleRoleName() {
+        return this.roleName.substring(5);
     }
 
     public int getId() {
