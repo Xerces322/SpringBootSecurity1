@@ -24,12 +24,6 @@ public class UserController {
     @GetMapping
     public String profile(Model model, Principal principal) {
         User user = userService.findByEmail(principal.getName());
-        for (Role role : user.getRoles()) {
-            if (role.getRoleName().equals("ROLE_ADMIN")) {
-                model.addAttribute("user", user);
-                return "admin/profile";
-            }
-        }
         model.addAttribute("user", user);
         return "user/profile";
     }

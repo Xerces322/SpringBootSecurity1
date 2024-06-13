@@ -19,17 +19,11 @@ import java.security.Principal;
 public class AdminController {
     private final UserService userService;
     private final RoleService roleService;
-    private UserValidator userValidator;
 
     @Autowired
     public AdminController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
-    }
-
-    @Autowired
-    public void setUserValidator(UserValidator userValidator) {
-        this.userValidator = userValidator;
     }
 
     @GetMapping
@@ -72,29 +66,9 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-
-//    @GetMapping("/index")
-//    public String index(Model model) {
-//        model.addAttribute("users", userService.findAll());
-//        return "admin/index";
-//    }
-
-//    @GetMapping("/profile")
-//    public String profile(@RequestParam(name = "username") String email, Model model) {
-//        model.addAttribute("user", userService.findByUsername(username));
-//        return "admin/profile";
-//    }
-
-//    @PostMapping("/edit")
-//    public String edit(@RequestParam(name = "username") String username, Model model) {
-//        model.addAttribute("user", userService.findByUsername(username));
-//        model.addAttribute("roles", roleService.getRoles());
-//        return "admin/edit";
-//    }
-
-
-
-
-
-
+    @GetMapping("/user")
+    public String profile(Model model, Principal principal) {
+        model.addAttribute("user", userService.findByEmail(principal.getName()));
+        return "admin/profile";
+    }
 }
