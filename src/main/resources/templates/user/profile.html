@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Admin page</title>
+    <!-- Стили -->
+    <style>
+        .nav-link {
+            text-align: left;
+            border: none;
+            background: none;
+            color: inherit;
+            padding: 0.5rem 1rem;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background-color: #0028ff;
+            color: white;
+        }
+    </style>
+</head>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.getJSON("api/user", function (data) {
+            let tableBody = $("#userTableBody");
+            let row = $("<tr />");
+            $("<td />").text(data.id).appendTo(row);
+            $("<td />").text(data.firstName).appendTo(row);
+            $("<td />").text(data.lastName).appendTo(row);
+            $("<td />").text(data.age).appendTo(row);
+            $("<td />").text(data.email).appendTo(row);
+            let roles = data.roles.map(function (role) {
+                return role.roleName;
+            }).join(", ");
+            $("<td />").text(roles).appendTo(row);
+            tableBody.append(row);
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        // Функция для заполнения данных
+        function fillData(email, roles) {
+            $('#current_email').text(email);
+            $('#current_roles').text(roles.map(role => role.roleName).join(', '));
+        }
+
+        // AJAX-запрос для получения данных
+        $.ajax({
+            url: '/api/user', // Убедитесь, что URL корректен
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                fillData(data.email, data.roles);
+            }
+        });
+    });
+</script>
+<body>
+<div class="bg-dark text-white py-2 pl-3 pr-3 d-flex align-items-center justify-content-between">
+    <span style="font-size: 20px;">
+        <strong>
+            <a id="current_email">
+                <!--EMAIL-->
+            </a>
+        </strong>
+        <span> with roles: </span>
+        <span id="current_roles">
+            <!--ROLES-->
+        </span>
+    </span>
+    <a href="/logout">Logout</a>
+</div>
+<div class="container-fluid p-0">
+    <div class="row no-gutters">
+        <!-- Навигация -->
+        <div class="col-2">
+            <nav class="nav flex-column">
+                                <button class="nav-link active" type="button" data-href="/user">User</button>
+            </nav>
+        </div>
+
+        <!-- Таблица с информацией о пользователях -->
+        <div class="col-10 pl-3">
+            <h1>User information-page</h1>
+            <table class="table" id="user_table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Age</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                </tr>
+                </thead>
+                <tbody id="userTableBody">
+                <!-- Здесь будут динамически добавлены строки -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
