@@ -33,11 +33,13 @@
 <div class="bg-dark text-white py-2 pl-3 pr-3 d-flex align-items-center justify-content-between">
     <span style="font-size: 20px;">
         <strong>
-            <a th:text="${user.getEmail()}"></a>
+            <a id="shapka">
+                <!--EMAIL-->
+            </a>
         </strong>
         <span> with roles: </span>
-        <span th:each="role : ${user.getRoles()}">
-            <span th:text="${role.getSimpleRoleName()}"></span>
+        <span id="kepka">
+            <!--ROLES-->
         </span>
     </span>
     <a href="/logout">Logout</a>
@@ -47,25 +49,25 @@
     <div class="row no-gutters">
         <div class="col-2">
             <nav class="nav flex-column">
-                <button sec:authorize="hasRole('ROLE_ADMIN')" class="nav-link active" type="button" data-href="/admin">Admin</button>
+                <button class="nav-link active" type="button" data-href="/admin">Admin</button>
                 <button class="nav-link" type="button" data-href="/admin/user">User</button>
             </nav>
 
             <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    var buttons = document.querySelectorAll('.nav-link');
-                    buttons.forEach(function(button) {
-                        button.addEventListener('click', function() {
-                            buttons.forEach(function(btn) {
+                document.addEventListener('DOMContentLoaded', function () {
+                    const buttons = document.querySelectorAll('.nav-link');
+                    buttons.forEach(function (button) {
+                        button.addEventListener('click', function () {
+                            buttons.forEach(function (btn) {
                                 btn.classList.remove('active');
                             });
                             this.classList.add('active');
 
-                            var href = this.getAttribute('data-href');
+                            const href = this.getAttribute('data-href');
                             if (href) {
                                 window.location.href = href;
                             }
-                        });
+                        })
                     });
                 });
             </script>
@@ -93,86 +95,80 @@
                     <th>Delete</th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr th:each="u : ${users}">
-                    <td th:text="${u.id}"></td>
-                    <td th:text="${u.firstName}"></td>
-                    <td th:text="${u.lastName}"></td>
-                    <td th:text="${u.age}"></td>
-                    <td th:text="${u.email}"></td>
-                    <td>
-                        <span th:each="role : ${u.getRoles()}"
-                              th:text="${role.getSimpleRoleName() + ' '}"></span>
-                    </td>
-                    <td>
-                        <button class="btn btn-info" role="button" data-toggle="modal"
-                                th:attr="data-target='#editModal' + ${u.id}">Edit
-                        </button>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-danger" data-toggle="modal"
-                                th:attr="data-target=${'#deleteModal' + u.id}">Delete
-                        </button>
-                    </td>
-                </tr>
+                <tbody id="pechka">
+
                 </tbody>
             </table>
         </div>
     </div>
 </div>
 
-<div th:each="uu : ${users}" th:object="${uu}">
-    <div class="modal fade" th:id="'editModal' + ${uu.id}" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-sm-custom" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Edit user</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form th:method="PATCH" th:action="@{/admin/update}" style="margin-bottom: 0;">
-                        <input type="hidden" th:value="${uu.id}" name="id"/>
-                        <div class="form-group">
-                            <label for="firstName">First Name</label>
-                            <input type="text" id="firstName" class="form-control" th:value="${uu.firstName}"
-                                   name="firstName" required minlength="2"
-                                   maxlength="100" pattern="[A-Za-zА-Яа-яЁё]+"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="lastName">Last Name</label>
-                            <input type="text" id="lastName" class="form-control" th:value="${uu.lastName}"
-                                   name="lastName" required  minlength="2"
-                                   maxlength="100" pattern="[A-Za-zА-Яа-яЁё]+"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="age">Age</label>
-                            <input type="number" id="age" class="form-control" th:value="${uu.age}" name="age"
-                                   required min="18" max="80"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" class="form-control" th:value="${uu.email}"
-                                   name="email" required pattern="^\S+@\S+\.\S+$"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <input type="password" id="password" class="form-control"
-                                   th:value="${uu.password}" name="password" required minlength="3"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="roles">Role</label>
-                            <select multiple id="roles" class="form-control" name="roles" required
-                                    th:size="${roles.size()}">
-                                <option th:each="role : ${roles}" th:value="${role.id}"
-                                        th:selected="${uu.roles.contains(role)}" th:text="${role.roleName}">
-                                </option>
-                            </select>
+<div class="modal" tabindex="-1" id="editModal"
+     aria-labelledby="EditModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit user</h5>
+            </div>
+            <div class="modal-body text-center">
+                <div class="d-flex justify-content-center align-items-center container">
+                    <form id="formEdit">
+                        <div class="modal-body ">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label for="edit-id"><b>ID</b></label>
+                                        <input class="form-control"
+                                               type="text"
+                                               name="id"
+                                               id="edit-id"
+                                               readonly/>
+                                        <label for="edit-name"><b>Name</b></label>
+                                        <input class="form-control"
+                                               type="text"
+                                               name="name"
+                                               id="edit-name"/>
+                                        <label for="edit-surname"><b>Surname</b></label>
+                                        <input class="form-control"
+                                               type="text"
+                                               name="surname"
+                                               id="edit-surname"/>
+                                        <label for="edit-email"><b>Email</b></label>
+                                        <input class="form-control"
+                                               type="text"
+                                               name="email"
+                                               id="edit-email"/>
+                                        <label for="edit-password"><b>Password</b></label>
+                                        <input class="form-control"
+                                               type="password"
+                                               name="password"
+                                               id="edit-password"
+                                               autocomplete="off"/>
+                                        <label for="edit-age"><b>Age</b></label>
+                                        <input class="form-control"
+                                               type="number"
+                                               name="age"
+                                               id="edit-age"/>
+                                        <label for="edit-roles"><b>Role</b></label>
+                                        <select multiple class="form-control"
+                                                size="2"
+                                                name="roles" required
+                                                id="edit-roles">
+                                            <option value="1">ADMIN</option>
+                                            <option value="2">USER</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Edit</button>
+                            <button type="button"
+                                    class="btn btn-secondary"
+                                    id="editClose"
+                                    data-dismiss="modal">Close
+                            </button>
+                            <input type="submit" class="btn btn-primary"
+                                   value="Edit">
                         </div>
                     </form>
                 </div>
@@ -232,9 +228,8 @@
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
         crossorigin="anonymous"></script>
@@ -242,4 +237,155 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
 </body>
+<script>
+    $(document).ready(function () {
+        // Функция для заполнения данных
+        function fillData(email, roles) {
+            $('#shapka').text(email);
+            $('#kepka').text(roles.map(role => role.roleName).join(', '));
+        }
+
+        // AJAX-запрос для получения данных
+        $.ajax({
+            url: '/api/admin/current', // Убедитесь, что URL корректен
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                fillData(data.email, data.roles);
+            }
+        });
+    });
+</script>
+<script type="text/javascript">
+    async function getUserById(id) {
+        let response = await fetch("/api/admin/" + id);
+        return await response.json();
+    }
+    async function open_fill_modal(form, modal, id) {
+        modal.show();
+        let user = await getUserById(id);
+        form.id.value = user.id;
+        form.name.value = user.firstName;
+        form.surname.value = user.lastName;
+        form.email.value = user.email;
+        form.password.value = user.password;
+        form.age.value = user.age;
+
+        // Очистка и заполнение списка ролей
+        let rolesSelect = form.roles;
+        rolesSelect.innerHTML = ''; // Очищаем список перед заполнением
+
+        // Доступные роли для выбора
+        const allRoles = [
+            { id: 1, role: 'ROLE_USER' },
+            { id: 2, role: 'ROLE_ADMIN' }
+        ];
+
+        allRoles.forEach(role => {
+            let option = document.createElement('option');
+            option.value = role.id;
+            option.textContent = role.role;
+            if (user.roles.some(userRole => userRole.role === role.role)) {
+                option.selected = true;
+            }
+            rolesSelect.appendChild(option);
+        });
+    }
+
+    $(document).ready(function () {
+        let tableBody = $("#pechka");
+
+        let formEdit = document.forms["formEdit"];
+        editUser();
+
+        async function editModal(id) {
+            const modalEdit = new bootstrap.Modal(document.querySelector('#editModal'));
+             await open_fill_modal(formEdit, modalEdit, id);
+        }
+
+        function editUser() {
+            formEdit.addEventListener("submit", ev => {
+                ev.preventDefault();
+
+                let rolesForEdit = [];
+                for (let i = 0; i < formEdit.roles.options.length; i++) {
+                    if (formEdit.roles.options[i].selected) {
+                        rolesForEdit.push({
+                            id: formEdit.roles.options[i].value,
+                            role: "ROLE_" + formEdit.roles.options[i].text
+                        });
+                    }
+                }
+
+                // Проверяем, изменился ли пароль
+                let password = formEdit.password.value.trim(); // Получаем значение пароля и убираем лишние пробелы
+                let requestBody = {
+                    id: formEdit.id.value,
+                    firstName: formEdit.name.value,
+                    lastName: formEdit.surname.value,
+                    age: formEdit.age.value,
+                    email: formEdit.email.value,
+                    roles: rolesForEdit
+                };
+
+                // Добавляем пароль в тело запроса, если он изменился
+                if (password !== "") {
+                    requestBody.password = password;
+                }
+
+                fetch("/api/admin/" + formEdit.id.value, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                }).then(() => {
+                    $('#editClose').click();
+                    getAllUsers();
+                });
+            });
+        }
+
+        // const editKnopka = document.getElementById("editClose");
+        // editKnopka.addEventListener("click", editUser)
+
+        function deleteUser(userId) {
+            console.log("Delete user with id: " + userId);
+        }
+        const getAllUsers = () => {
+            $.getJSON("api/admin", function (data) {
+                tableBody.empty()
+                data.forEach(user => {
+                    let row = $("<tr />");
+                    $("<td />").text(user.id).appendTo(row);
+                    $("<td />").text(user.firstName).appendTo(row);
+                    $("<td />").text(user.lastName).appendTo(row);
+                    $("<td />").text(user.age).appendTo(row);
+                    $("<td />").text(user.email).appendTo(row);
+                    let roles = user.roles.map(function (role) {
+                        return role.roleName;
+                    }).join(", ");
+                    $("<td />").text(roles).appendTo(row);
+
+                    let editButton = $("<button class='btn btn-info' style='background-color: #0b9595; color: #fff'>Edit</button>").click(function(){
+                        editModal(user.id);
+                    });
+                    let deleteButton = $("<button class='btn btn-danger'>Delete</button>").click(function(){
+                        deleteUser(user.id);
+                    });
+
+                    $("<td />").append(editButton).appendTo(row);
+                    $("<td />").append(deleteButton).appendTo(row);
+                    tableBody.append("");
+                    tableBody.append(row);
+                });
+            });
+        }
+        getAllUsers()
+    });
+    // class="btn btn-info"
+    // style="background-color: #0b9595; color: #fff"
+</script>
+<script type="text/javascript">
+</script>
 </html>
