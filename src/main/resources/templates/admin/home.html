@@ -177,51 +177,79 @@
     </div>
 </div>
 
-<div th:each="uu : ${users}">
-    <div class="modal fade" th:id="${'deleteModal' + uu.id}" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-sm-custom" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Delete user</h5>
-                </div>
-                <div class="modal-body">
-                    <form th:method="DELETE" th:action="@{/admin/delete}">
-                        <input type="hidden" th:value="${uu.id}" name="id"/>
-                        <label for="name-del" class="font-weight-bold mb-0">First
-                            name</label>
-                        <input type="text" th:value="${uu.firstName}"
-                               id="name-del" readonly class="form-control"
-                               name="name"/>
-                        <label for="lastname-del" class="font-weight-bold mb-0">Last
-                            name</label>
-                        <input type="text" th:value="${uu.lastName}"
-                               id="lastname-del" readonly class="form-control"
-                               name="lastname"/>
-                        <label for="age-del"
-                               class="font-weight-bold mb-0">Age</label>
-                        <input type="number" th:value="${uu.age}" id="age-del"
-                               readonly class="form-control" name="age"/>
-                        <label for="username-del" class="font-weight-bold mb-0">Email</label>
-                        <input type="text" th:value="${uu.email}"
-                               id="username-del" readonly class="form-control"
-                               name="email"/>
-                        <label for="roles-del" class="font-weight-bold mb-0">Role</label>
-                        <select multiple class="form-control" id="roles-del" readonly disabled
-                                th:size="${roles.size()}">
-                            <option th:each="role : ${roles}"
-                                    th:value="${role.id}"
-                                    th:selected="${uu.getRoles().contains(role)}"
-                                    th:text="${#strings.replace(role.getRoleName(), 'ROLE_', '')}"></option>
-                        </select>
-                        <br>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary"
-                                    data-dismiss="modal">Close
-                            </button>
-                            <input type="submit" class="btn btn-danger"
-                                   value="Delete"/>
-                        </div>
-                    </form>
+
+<div class="modal" tabindex="-1" id="deleteModal"
+     aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete user</h5>
+            </div>
+
+            <div class="modal-body text-center">
+                <div class="d-flex justify-content-center align-items-center container">
+                    <div class="row">
+                        <form id="formDelete">
+                            <div class="mb-3">
+                                <label for="delete-id"><b>ID</b></label>
+                                <input class="form-control"
+                                       type="text"
+                                       name="id" id="delete-id"
+                                       disabled>
+                                <label for="delete-name"><b>First
+                                    name</b></label>
+                                <input class="form-control"
+                                       name="name"
+                                       type="text"
+                                       id="delete-name"
+                                       disabled/>
+                                <label for="delete-surname"><b>Last
+                                    name</b></label>
+                                <input class="form-control"
+                                       name="surname"
+                                       type="text"
+                                       id="delete-surname"
+                                       disabled/>
+                                <label for="delete-email"><b>Email</b></label>
+                                <input class="form-control"
+                                       name="email"
+                                       type="text"
+                                       id="delete-email"
+                                       disabled/>
+                                <label for="delete-password"><b>Password</b></label>
+                                <input class="form-control"
+                                       name="password"
+                                       type="text"
+                                       id="delete-password"
+                                       disabled/>
+                                <label for="delete-age"><b>Age</b></label>
+                                <input class="form-control"
+                                       name="age"
+                                       type="number"
+                                       id="delete-age"
+                                       disabled/>
+                                <label for="delete-roles"><b>Role</b></label>
+                                <select multiple
+                                        class="form-control col-12"
+                                        size="2"
+                                        id="delete-roles"
+                                        name="roles"
+                                        disabled>
+                                </select>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button"
+                                        class="btn btn-secondary"
+                                        id="deleteClose"
+                                        data-dismiss="modal">
+                                    Close
+                                </button>
+                                <input type="submit"
+                                       class="btn btn-danger"
+                                       value="Delete">
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -275,25 +303,75 @@
         let rolesSelect = form.roles;
         rolesSelect.innerHTML = ''; // Очищаем список перед заполнением
 
-        // Доступные роли для выбора
-        const allRoles = [
-            { id: 1, role: 'ROLE_USER' },
-            { id: 2, role: 'ROLE_ADMIN' }
-        ];
 
-        allRoles.forEach(role => {
-            let option = document.createElement('option');
-            option.value = role.id;
-            option.textContent = role.role;
-            if (user.roles.some(userRole => userRole.role === role.role)) {
-                option.selected = true;
-            }
-            rolesSelect.appendChild(option);
+        $(document).ready(function () {
+            const allRoles = []
+            $.getJSON("api/admin/roles", function (data) {
+                data.forEach(role => {
+                    const formattedRole = {
+                        id: role.id,
+                        role: role.roleName
+                    };
+                    allRoles.push(formattedRole);
+                });
+                allRoles.forEach(role => {
+                    let option = document.createElement('option');
+                    option.value = role.id;
+                    option.textContent = role.role;
+                    if (user.roles.some(userRole => userRole.role === role.role)) {
+                        option.selected = true;
+                    }
+                    rolesSelect.appendChild(option);
+                });
+            });
         });
+
+
     }
 
     $(document).ready(function () {
         let tableBody = $("#pechka");
+
+        let formDelete = document.forms["formDelete"]
+        deleteUser();
+
+        async function deleteModal(id) {
+            const modalDelete = new bootstrap.Modal(document.querySelector('#deleteModal'));
+            await open_fill_modal(formDelete, modalDelete, id);
+        }
+
+        function deleteUser() {
+            formDelete.addEventListener("submit", ev => {
+                ev.preventDefault();
+
+                let rolesForDelete = [];
+                for (let i = 0; i < formDelete.roles.options.length; i++) {
+                    if (formDelete.roles.options[i].selected) rolesForDelete.push({
+                        id: formDelete.roles.options[i].value,
+                        role: "ROLE_" + formDelete.roles.options[i].text
+                    });
+                }
+
+                fetch("http://localhost:8080/api/admin/" + formDelete.id.value, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: formDelete.id.value,
+                        firstName: formDelete.name.value,
+                        lastName: formDelete.surname.value,
+                        email: formDelete.email.value,
+                        password: formDelete.password.value,
+                        age: formDelete.age.value,
+                        roles: rolesForDelete
+                    })
+                }).then(() => {
+                    $('#deleteClose').click();
+                    getAllUsers();
+                });
+            });
+        }
 
         let formEdit = document.forms["formEdit"];
         editUser();
@@ -346,12 +424,8 @@
             });
         }
 
-        // const editKnopka = document.getElementById("editClose");
-        // editKnopka.addEventListener("click", editUser)
 
-        function deleteUser(userId) {
-            console.log("Delete user with id: " + userId);
-        }
+
         const getAllUsers = () => {
             $.getJSON("api/admin", function (data) {
                 tableBody.empty()
@@ -371,7 +445,7 @@
                         editModal(user.id);
                     });
                     let deleteButton = $("<button class='btn btn-danger'>Delete</button>").click(function(){
-                        deleteUser(user.id);
+                        deleteModal(user.id);
                     });
 
                     $("<td />").append(editButton).appendTo(row);

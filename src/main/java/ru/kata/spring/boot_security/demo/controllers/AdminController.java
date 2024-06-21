@@ -4,6 +4,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +36,11 @@ public class AdminController {
         this.userService = userService;
         this.roleService = roleService;
         this.modelMapper = modelMapper;
+    }
+
+    @GetMapping("/roles")
+    public ResponseEntity<List<RoleDTO>> getRoles() {
+        return ResponseEntity.ok(roleService.getRoles().stream().map(this::convertToRoleDTO).collect(Collectors.toList()));
     }
 
     @GetMapping
@@ -79,6 +86,7 @@ public class AdminController {
 
     @GetMapping("/current")
     public ResponseEntity<UserDTO> currentUser(Principal principal) {
+
         System.out.println("asdasdasd");
         return ResponseEntity.ok(convertToUserDTO(userService.findByEmail(principal.getName())));
     }
